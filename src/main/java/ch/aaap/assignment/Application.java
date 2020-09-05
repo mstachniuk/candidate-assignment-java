@@ -1,21 +1,14 @@
 package ch.aaap.assignment;
 
 import ch.aaap.assignment.model.Canton;
-import ch.aaap.assignment.model.District;
 import ch.aaap.assignment.model.Model;
 import ch.aaap.assignment.model.PoliticalCommunity;
-import ch.aaap.assignment.model.PostalCommunity;
-import ch.aaap.assignment.model.impl.CantonImpl;
-import ch.aaap.assignment.model.impl.DistrictImpl;
 import ch.aaap.assignment.model.impl.ModelFactory;
-import ch.aaap.assignment.model.impl.ModelImpl;
-import ch.aaap.assignment.model.impl.PoliticalCommunityImpl;
-import ch.aaap.assignment.model.impl.PostalCommunityImpl;
 import ch.aaap.assignment.raw.CSVPoliticalCommunity;
 import ch.aaap.assignment.raw.CSVPostalCommunity;
 import ch.aaap.assignment.raw.CSVUtil;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Application {
@@ -54,15 +47,14 @@ public class Application {
             .filter(code -> code.equals(cantonCode))
             .count();
     if (result == 0) {
-      checkIfCantonExist(cantonCode);
+      getCantonByCodeOrThrowException(cantonCode);
     }
     return result;
   }
 
-  private void checkIfCantonExist(String cantonCode) {
-    model.getCantons().stream()
-            .map(Canton::getCode)
-            .filter(code -> code.equals(cantonCode))
+  private Canton getCantonByCodeOrThrowException(String cantonCode) {
+    return model.getCantons().stream()
+            .filter(canton -> canton.getCode().equals(cantonCode))
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("Canton with code " + cantonCode + " doesn't exist"));
   }
@@ -72,8 +64,9 @@ public class Application {
    * @return amount of districts in given canton
    */
   public long getAmountOfDistrictsInCanton(String cantonCode) {
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    return getCantonByCodeOrThrowException(cantonCode)
+            .getDistricts()
+            .size();
   }
 
   /**

@@ -57,6 +57,7 @@ public class ModelFactory {
 		if (district == null) {
 			district = createDistrict(element, canton);
 			districts.put(district.getNumber(), district);
+			canton.addDistrict(district);
 		}
 		return district;
 	}
