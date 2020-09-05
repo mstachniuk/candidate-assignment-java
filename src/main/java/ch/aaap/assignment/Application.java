@@ -1,31 +1,42 @@
 package ch.aaap.assignment;
 
+import ch.aaap.assignment.model.Canton;
+import ch.aaap.assignment.model.District;
 import ch.aaap.assignment.model.Model;
+import ch.aaap.assignment.model.PoliticalCommunity;
+import ch.aaap.assignment.model.PostalCommunity;
+import ch.aaap.assignment.model.impl.CantonImpl;
+import ch.aaap.assignment.model.impl.DistrictImpl;
+import ch.aaap.assignment.model.impl.ModelFactory;
+import ch.aaap.assignment.model.impl.ModelImpl;
+import ch.aaap.assignment.model.impl.PoliticalCommunityImpl;
+import ch.aaap.assignment.model.impl.PostalCommunityImpl;
 import ch.aaap.assignment.raw.CSVPoliticalCommunity;
 import ch.aaap.assignment.raw.CSVPostalCommunity;
 import ch.aaap.assignment.raw.CSVUtil;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Application {
 
   private Model model = null;
 
-  public Application() {
-    initModel();
-  }
-
   public static void main(String[] args) {
     new Application();
   }
 
+  public Application() {
+    initModel();
+  }
+
   /** Reads the CSVs and initializes a in memory model */
   private void initModel() {
-    Set<CSVPoliticalCommunity> politicalCommunities = CSVUtil.getPoliticalCommunities();
-    Set<CSVPostalCommunity> postalCommunities = CSVUtil.getPostalCommunities();
+    Set<CSVPoliticalCommunity> csvPoliticalCommunities = CSVUtil.getPoliticalCommunities();
+    Set<CSVPostalCommunity> csvPostalCommunities = CSVUtil.getPostalCommunities();
 
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    ModelFactory modelFactory = new ModelFactory();
+    model = modelFactory.createModel(csvPoliticalCommunities, csvPostalCommunities);
   }
   /** @return model */
   public Model getModel() {
