@@ -48,8 +48,23 @@ public class Application {
    * @return amount of political communities in given canton
    */
   public long getAmountOfPoliticalCommunitiesInCanton(String cantonCode) {
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    long result = model.getPoliticalCommunities().stream()
+            .map(PoliticalCommunity::getCanton)
+            .map(Canton::getCode)
+            .filter(code -> code.equals(cantonCode))
+            .count();
+    if (result == 0) {
+      checkIfCantonExist(cantonCode);
+    }
+    return result;
+  }
+
+  private void checkIfCantonExist(String cantonCode) {
+    model.getCantons().stream()
+            .map(Canton::getCode)
+            .filter(code -> code.equals(cantonCode))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("Canton with code " + cantonCode + " doesn't exist"));
   }
 
   /**

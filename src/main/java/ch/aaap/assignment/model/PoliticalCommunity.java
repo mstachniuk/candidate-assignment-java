@@ -12,5 +12,8 @@ public interface PoliticalCommunity {
 
   LocalDate getLastUpdate();
 
+  District getDistrict();
+
+  Canton getCanton();
   // TODO add more features here representing the relations
 }
