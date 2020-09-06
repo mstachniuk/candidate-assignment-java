@@ -55,7 +55,7 @@ public class ApplicationTest {
   }
 
   @Test
-  public void returnsAmountOfPoliticalCommunitiesInDistict() {
+  public void returnsAmountOfPoliticalCommunitiesInDistrict() {
     assertEquals(
         14,
         sut.getAmountOfPoliticalCommunitiesInDistrict("101"),

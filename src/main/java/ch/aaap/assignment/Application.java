@@ -1,6 +1,7 @@
 package ch.aaap.assignment;
 
 import ch.aaap.assignment.model.Canton;
+import ch.aaap.assignment.model.District;
 import ch.aaap.assignment.model.Model;
 import ch.aaap.assignment.model.PoliticalCommunity;
 import ch.aaap.assignment.model.impl.ModelFactory;
@@ -41,15 +42,11 @@ public class Application {
    * @return amount of political communities in given canton
    */
   public long getAmountOfPoliticalCommunitiesInCanton(String cantonCode) {
-    long result = model.getPoliticalCommunities().stream()
+    Canton cantonByCode = getCantonByCodeOrThrowException(cantonCode);
+    return model.getPoliticalCommunities().stream()
             .map(PoliticalCommunity::getCanton)
-            .map(Canton::getCode)
-            .filter(code -> code.equals(cantonCode))
+            .filter(canton -> canton.equals(cantonByCode))
             .count();
-    if (result == 0) {
-      getCantonByCodeOrThrowException(cantonCode);
-    }
-    return result;
   }
 
   private Canton getCantonByCodeOrThrowException(String cantonCode) {
@@ -74,8 +71,18 @@ public class Application {
    * @return amount of districts in given canton
    */
   public long getAmountOfPoliticalCommunitiesInDistrict(String districtNumber) {
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    District districtByNumber = getDistrictByNumberOrThrowException(districtNumber);
+    return model.getPoliticalCommunities().stream()
+            .map(PoliticalCommunity::getDistrict)
+            .filter(district -> district.equals(districtByNumber))
+            .count();
+  }
+
+  private District getDistrictByNumberOrThrowException(String districtNumber) {
+    return model.getDistricts().stream()
+            .filter(district -> district.getNumber().equals(districtNumber))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("Distric with code " + districtNumber + " doesn't exist"));
   }
 
   /**
