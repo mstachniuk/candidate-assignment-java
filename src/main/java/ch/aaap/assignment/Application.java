@@ -2,6 +2,7 @@ package ch.aaap.assignment;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -109,8 +110,14 @@ public class Application {
    */
   public LocalDate getLastUpdateOfPoliticalCommunityByPostalCommunityName(
       String postalCommunityName) {
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    return model.getPostalCommunities().stream()
+            .filter(postalCommunity -> postalCommunity.getName().equals(postalCommunityName))
+            .map(PostalCommunity::getPoliticalCommunities)
+            .flatMap(Collection::stream)
+            .sorted(Comparator.comparing(PoliticalCommunity::getLastUpdate))
+            .findFirst()
+            .get()
+            .getLastUpdate();
   }
 
   /**
