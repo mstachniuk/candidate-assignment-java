@@ -3,7 +3,10 @@ package ch.aaap.assignment.model.impl;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import ch.aaap.assignment.model.Canton;
 import ch.aaap.assignment.model.District;
@@ -29,15 +32,14 @@ public class ModelFactory {
 			politicalCommunities.add(politicalCommunity);
 		});
 
-		Set<PostalCommunity> postalCommunities = new HashSet<>();
+		Map<Pair<String, String>, PostalCommunity> postalCommunities = new HashMap<>();
 		csvPostalCommunities.forEach(element -> {
-			PostalCommunity postalCommunity = createPostalCommunity(element);
-			postalCommunities.add(postalCommunity);
+			updateOrCreatePostalCommunity(postalCommunities, element, politicalCommunities);
 		});
 
 		return ModelImpl.builder()
 				.politicalCommunities(politicalCommunities)
-				.postalCommunities(postalCommunities)
+				.postalCommunities(new HashSet<>(postalCommunities.values()))
 				.cantons(new HashSet<>(cantons.values()))
 				.districts(new HashSet<>(districts.values()))
 				.build();
@@ -62,12 +64,31 @@ public class ModelFactory {
 		return district;
 	}
 
+	private void updateOrCreatePostalCommunity(
+			Map<Pair<String,String>,PostalCommunity> postalCommunities,
+			CSVPostalCommunity element,
+			Set<PoliticalCommunity> politicalCommunities) {
+		String zipCode = element.getZipCode();
+		String zipCodeAddition = element.getZipCodeAddition();
+		Pair<String,String> key = Pair.of(zipCode, zipCodeAddition);
+		PostalCommunity postalCommunity = postalCommunities.get(key);
+		if (postalCommunity == null) {
+			postalCommunity = createPostalCommunity(element);
+			postalCommunities.put(key, postalCommunity);
+		}
+
+		String politicalCommunityNumber = element.getPoliticalCommunityNumber();
+		Optional<PoliticalCommunity> politicalCommunity = politicalCommunities.stream()
+				.filter(pc -> pc.getNumber().equals(politicalCommunityNumber))
+				.findFirst();
+		postalCommunity.addPoliticalCommunity(politicalCommunity.get());
+	}
+
 	private PostalCommunity createPostalCommunity(CSVPostalCommunity element) {
 		return PostalCommunityImpl.builder()
 						.zipCode(element.getZipCode())
 						.zipCodeAddition(element.getZipCodeAddition())
 						.name(element.getName())
-						// TODO canton, politicalCommunities
 						.build();
 	}
 

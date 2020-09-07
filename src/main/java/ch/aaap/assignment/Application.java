@@ -1,16 +1,19 @@
 package ch.aaap.assignment;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import ch.aaap.assignment.model.Canton;
 import ch.aaap.assignment.model.District;
 import ch.aaap.assignment.model.Model;
 import ch.aaap.assignment.model.PoliticalCommunity;
+import ch.aaap.assignment.model.PostalCommunity;
 import ch.aaap.assignment.model.impl.ModelFactory;
 import ch.aaap.assignment.raw.CSVPoliticalCommunity;
 import ch.aaap.assignment.raw.CSVPostalCommunity;
 import ch.aaap.assignment.raw.CSVUtil;
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
 
 public class Application {
 
@@ -87,11 +90,17 @@ public class Application {
 
   /**
    * @param zipCode 4 digit zip code
-   * @return district that belongs to specified zip code
+   * @return districts that belongs to specified zip code
    */
   public Set<String> getDistrictsForZipCode(String zipCode) {
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    return model.getPostalCommunities().stream()
+            .filter(postalCommunity -> postalCommunity.getZipCode().equals(zipCode))
+            .map(PostalCommunity::getPoliticalCommunities)
+            .flatMap(Collection::stream)
+            .map(PoliticalCommunity::getDistrict)
+            .map(District::getName)
+            .collect(Collectors.toSet());
+
   }
 
   /**
