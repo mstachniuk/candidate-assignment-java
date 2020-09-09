@@ -126,7 +126,6 @@ public class Application {
    * @return amount of canton
    */
   public long getAmountOfCantons() {
-    // TODO implementation
     return model.getCantons().size();
   }
 
@@ -136,7 +135,12 @@ public class Application {
    * @return amount of political communities without postal communities
    */
   public long getAmountOfPoliticalCommunityWithoutPostalCommunities() {
-    // TODO implementation
-    throw new RuntimeException("Not yet implemented");
+    Set<PoliticalCommunity> politicalCommunitiesWithPostalCommunities = model.getPostalCommunities().stream()
+            .map(PostalCommunity::getPoliticalCommunities)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+    return model.getPoliticalCommunities().stream()
+            .filter(politicalCommunity -> !politicalCommunitiesWithPostalCommunities.contains(politicalCommunity))
+            .count();
   }
 }
