@@ -15,5 +15,4 @@ public interface PoliticalCommunity {
   District getDistrict();
 
   Canton getCanton();
-  // TODO add more features here representing the relations
 }

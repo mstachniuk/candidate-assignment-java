@@ -7,5 +7,4 @@ public interface District {
   String getName();
 
   Canton getCanton();
-  // TODO add more features here representing the relations
 }

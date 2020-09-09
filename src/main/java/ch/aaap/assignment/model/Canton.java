@@ -11,5 +11,4 @@ public interface Canton {
   Set<District> getDistricts();
 
   void addDistrict(District district);
-  // TODO add more features here representing the relations
 }

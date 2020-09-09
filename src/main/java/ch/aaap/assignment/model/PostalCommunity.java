@@ -13,5 +13,4 @@ public interface PostalCommunity {
   Set<PoliticalCommunity> getPoliticalCommunities();
 
   void addPoliticalCommunity(PoliticalCommunity politicalCommunity);
-  // TODO add more features here representing the relations
 }
