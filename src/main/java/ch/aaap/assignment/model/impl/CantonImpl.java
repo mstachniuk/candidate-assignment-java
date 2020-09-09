@@ -1,10 +1,9 @@
 package ch.aaap.assignment.model.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import ch.aaap.assignment.model.Canton;
 import ch.aaap.assignment.model.District;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,16 +11,16 @@ import lombok.Getter;
 @Builder
 public class CantonImpl implements Canton {
 
-	private String code;
-	private String name;
-	private Set<District> districts;
+  private String code;
+  private String name;
+  private Set<District> districts;
 
-	@Override
-	public void addDistrict(District district) {
-		if (districts == null) {
-			districts = new HashSet<>();
-		}
-		districts.add(district);
-	}
+  @Override
+  public void addDistrict(District district) {
+    if (districts == null) {
+      districts = new HashSet<>();
+    }
+    districts.add(district);
+  }
 
 }

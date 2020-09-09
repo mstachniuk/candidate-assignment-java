@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CSVPostalCommunity {
+public class CsvPostalCommunity {
 
   // PLZ4
   private String zipCode;

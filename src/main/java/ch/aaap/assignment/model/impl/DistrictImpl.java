@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class DistrictImpl implements District {
 
-	private String number;
-	private String name;
-	private Canton canton;
+  private String number;
+  private String name;
+  private Canton canton;
 }

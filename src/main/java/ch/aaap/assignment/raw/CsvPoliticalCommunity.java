@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CSVPoliticalCommunity {
+public class CsvPoliticalCommunity {
 
   // GDENR
   private String number;

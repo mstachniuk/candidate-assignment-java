@@ -14,29 +14,35 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 /**
- * This is a helper class to read the provided CSV
+ * This is a helper class to read the provided CSV.
  *
  * <p>You don't have adapt anything within this class!
  */
-public class CSVUtil {
+public class CsvUtil {
 
   private static final String POLITICAL_COMMUNITY_FILE = "/GDE_from_be-b-00.04-agv-01.xlsx.csv";
   private static final String POSTAL_COMMUNITY_FILE = "/PLZ6_from_do-t-09.02-gwr-37.xlsx.csv";
 
-  private CSVUtil() {}
+  private CsvUtil() {
+  }
 
-  public static Set<CSVPoliticalCommunity> getPoliticalCommunities() {
+  /**
+   * Returns Political Communities.
+   *
+   * @return Political Communities
+   */
+  public static Set<CsvPoliticalCommunity> getPoliticalCommunities() {
     try {
-      InputStream is = CSVUtil.class.getResourceAsStream(POLITICAL_COMMUNITY_FILE);
+      InputStream is = CsvUtil.class.getResourceAsStream(POLITICAL_COMMUNITY_FILE);
       Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
       CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-      Set<CSVPoliticalCommunity> models = new HashSet<>();
+      Set<CsvPoliticalCommunity> models = new HashSet<>();
 
       for (final CSVRecord record : parser) {
-        CSVPoliticalCommunity row =
-            CSVPoliticalCommunity.builder()
+        CsvPoliticalCommunity row =
+            CsvPoliticalCommunity.builder()
                 .number(record.get("GDENR"))
                 .name(record.get("GDENAME"))
                 .shortName(record.get("GDENAMK"))
@@ -56,16 +62,20 @@ public class CSVUtil {
     }
   }
 
-  public static Set<CSVPostalCommunity> getPostalCommunities() {
-
+  /**
+   * Returns Postal Communities.
+   *
+   * @return Postal Communities
+   */
+  public static Set<CsvPostalCommunity> getPostalCommunities() {
     try {
-      InputStream is = CSVUtil.class.getResourceAsStream(POSTAL_COMMUNITY_FILE);
+      InputStream is = CsvUtil.class.getResourceAsStream(POSTAL_COMMUNITY_FILE);
       Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
       CSVParser parser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
-      Set<CSVPostalCommunity> models = new HashSet<>();
+      Set<CsvPostalCommunity> models = new HashSet<>();
       for (final CSVRecord record : parser) {
-        CSVPostalCommunity row =
-            CSVPostalCommunity.builder()
+        CsvPostalCommunity row =
+            CsvPostalCommunity.builder()
                 .zipCode(record.get("PLZ4"))
                 .zipCodeAddition(record.get("PLZZ"))
                 .name(record.get("PLZNAMK"))

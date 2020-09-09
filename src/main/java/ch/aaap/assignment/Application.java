@@ -1,20 +1,19 @@
 package ch.aaap.assignment;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import ch.aaap.assignment.model.Canton;
 import ch.aaap.assignment.model.District;
 import ch.aaap.assignment.model.Model;
 import ch.aaap.assignment.model.PoliticalCommunity;
 import ch.aaap.assignment.model.PostalCommunity;
 import ch.aaap.assignment.model.impl.ModelFactory;
-import ch.aaap.assignment.raw.CSVPoliticalCommunity;
-import ch.aaap.assignment.raw.CSVPostalCommunity;
-import ch.aaap.assignment.raw.CSVUtil;
+import ch.aaap.assignment.raw.CsvPoliticalCommunity;
+import ch.aaap.assignment.raw.CsvPostalCommunity;
+import ch.aaap.assignment.raw.CsvUtil;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Application {
 
@@ -28,96 +27,109 @@ public class Application {
     initModel();
   }
 
-  /** Reads the CSVs and initializes a in memory model */
+  /**
+   * Reads the CSVs and initializes a in memory model.
+   */
   private void initModel() {
-    Set<CSVPoliticalCommunity> csvPoliticalCommunities = CSVUtil.getPoliticalCommunities();
-    Set<CSVPostalCommunity> csvPostalCommunities = CSVUtil.getPostalCommunities();
+    Set<CsvPoliticalCommunity> csvPoliticalCommunities = CsvUtil.getPoliticalCommunities();
+    Set<CsvPostalCommunity> csvPostalCommunities = CsvUtil.getPostalCommunities();
 
     ModelFactory modelFactory = new ModelFactory();
     model = modelFactory.createModel(csvPoliticalCommunities, csvPostalCommunities);
   }
-  /** @return model */
+
+  /**
+   * Returns application model.
+   * @return model
+   */
   public Model getModel() {
     return model;
   }
 
   /**
+   * Return amount of Political Communities in Canton.
    * @param cantonCode of a canton (e.g. ZH)
    * @return amount of political communities in given canton
    */
   public long getAmountOfPoliticalCommunitiesInCanton(String cantonCode) {
     Canton cantonByCode = getCantonByCodeOrThrowException(cantonCode);
     return model.getPoliticalCommunities().stream()
-            .map(PoliticalCommunity::getCanton)
-            .filter(canton -> canton.equals(cantonByCode))
-            .count();
+        .map(PoliticalCommunity::getCanton)
+        .filter(canton -> canton.equals(cantonByCode))
+        .count();
   }
 
   private Canton getCantonByCodeOrThrowException(String cantonCode) {
     return model.getCantons().stream()
-            .filter(canton -> canton.getCode().equals(cantonCode))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("Canton with code " + cantonCode + " doesn't exist"));
+        .filter(canton -> canton.getCode().equals(cantonCode))
+        .findAny()
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Canton with code " + cantonCode + " doesn't exist"));
   }
 
   /**
+   * Return amount of Districts in Canton.
    * @param cantonCode of a canton (e.g. ZH)
    * @return amount of districts in given canton
    */
   public long getAmountOfDistrictsInCanton(String cantonCode) {
     return getCantonByCodeOrThrowException(cantonCode)
-            .getDistricts()
-            .size();
+        .getDistricts()
+        .size();
   }
 
   /**
+   * Returns amount of Political Communities in District.
    * @param districtNumber of a district (e.g. 101)
    * @return amount of districts in given canton
    */
   public long getAmountOfPoliticalCommunitiesInDistrict(String districtNumber) {
     District districtByNumber = getDistrictByNumberOrThrowException(districtNumber);
     return model.getPoliticalCommunities().stream()
-            .map(PoliticalCommunity::getDistrict)
-            .filter(district -> district.equals(districtByNumber))
-            .count();
+        .map(PoliticalCommunity::getDistrict)
+        .filter(district -> district.equals(districtByNumber))
+        .count();
   }
 
   private District getDistrictByNumberOrThrowException(String districtNumber) {
     return model.getDistricts().stream()
-            .filter(district -> district.getNumber().equals(districtNumber))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("Distric with code " + districtNumber + " doesn't exist"));
+        .filter(district -> district.getNumber().equals(districtNumber))
+        .findAny()
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Distric with code " + districtNumber + " doesn't exist"));
   }
 
   /**
+   * Return a District by Zip Code.
    * @param zipCode 4 digit zip code
    * @return districts that belongs to specified zip code
    */
   public Set<String> getDistrictsForZipCode(String zipCode) {
     return model.getPostalCommunities().stream()
-            .filter(postalCommunity -> postalCommunity.getZipCode().equals(zipCode))
-            .map(PostalCommunity::getPoliticalCommunities)
-            .flatMap(Collection::stream)
-            .map(PoliticalCommunity::getDistrict)
-            .map(District::getName)
-            .collect(Collectors.toSet());
+        .filter(postalCommunity -> postalCommunity.getZipCode().equals(zipCode))
+        .map(PostalCommunity::getPoliticalCommunities)
+        .flatMap(Collection::stream)
+        .map(PoliticalCommunity::getDistrict)
+        .map(District::getName)
+        .collect(Collectors.toSet());
 
   }
 
   /**
+   * Returns last update of Political Community by Postal Community name.
    * @param postalCommunityName name
    * @return lastUpdate of the political community by a given postal community name
    */
   public LocalDate getLastUpdateOfPoliticalCommunityByPostalCommunityName(
       String postalCommunityName) {
     return model.getPostalCommunities().stream()
-            .filter(postalCommunity -> postalCommunity.getName().equals(postalCommunityName))
-            .map(PostalCommunity::getPoliticalCommunities)
-            .flatMap(Collection::stream)
-            .sorted(Comparator.comparing(PoliticalCommunity::getLastUpdate))
-            .findFirst()
-            .get()
-            .getLastUpdate();
+        .filter(postalCommunity -> postalCommunity.getName().equals(postalCommunityName))
+        .map(PostalCommunity::getPoliticalCommunities)
+        .flatMap(Collection::stream)
+        .sorted(Comparator.comparing(PoliticalCommunity::getLastUpdate))
+        .findFirst()
+        .get()
+        .getLastUpdate();
   }
 
   /**
@@ -135,12 +147,14 @@ public class Application {
    * @return amount of political communities without postal communities
    */
   public long getAmountOfPoliticalCommunityWithoutPostalCommunities() {
-    Set<PoliticalCommunity> politicalCommunitiesWithPostalCommunities = model.getPostalCommunities().stream()
-            .map(PostalCommunity::getPoliticalCommunities)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
+    Set<PoliticalCommunity> politicalCommunitiesWithPostalCommunities = model.getPostalCommunities()
+        .stream()
+        .map(PostalCommunity::getPoliticalCommunities)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
     return model.getPoliticalCommunities().stream()
-            .filter(politicalCommunity -> !politicalCommunitiesWithPostalCommunities.contains(politicalCommunity))
-            .count();
+        .filter(politicalCommunity -> !politicalCommunitiesWithPostalCommunities
+            .contains(politicalCommunity))
+        .count();
   }
 }
