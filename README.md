@@ -31,7 +31,7 @@ Proposal of Java interfaces (Note: Relations are not yet specified, use this int
 Implement all the other methods in ``Application.java`` that throw a runtime exception using your model / data structure that you have created in Assignment 1
 
 ### :memo: Assignment 4
-Fromat your source code additions according [Google Style Guide for Java](https://github.com/google/styleguide)
+Format your source code additions according [Google Style Guide for Java](https://github.com/google/styleguide)
 
 ### :memo: Assignment 5
 When looking at the 2 CSV's, describe some other "interesting" facts you get out of your data set's.

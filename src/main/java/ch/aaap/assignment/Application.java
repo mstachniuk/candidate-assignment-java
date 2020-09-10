@@ -12,15 +12,37 @@ import ch.aaap.assignment.raw.CsvUtil;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Application {
 
   private Model model = null;
 
   public static void main(String[] args) {
-    new Application();
+    Application app = new Application();
+    Set<PoliticalCommunity> communities = app
+        .getPoliticalCommunitiesWithoutPostalCommunities();
+    System.out.println("Political Communities Without Postal Communities:");
+    communities.forEach(pc -> System.out.println(pc.getName()));
+
+    System.out.println("Canton name | Canton Code | number of political communities");
+    app.getModel().getCantons().stream()
+        .map(canton -> Pair
+            .of(canton, app.getAmountOfPoliticalCommunitiesInCanton(canton.getCode())))
+        .sorted(Comparator.comparing(Pair::getValue))
+        .forEach(pair -> System.out.println(pair.getKey().getName() + " | "
+        + pair.getKey().getCode() + " | " + pair.getValue()));
+
+    System.out.println("Number of districts in cantons");
+    app.getModel().getCantons().stream()
+        .map(canton -> Pair.of(canton, canton.getDistricts().size()))
+        .sorted(Comparator.comparing(Pair::getValue))
+        .forEach(pair -> System.out.println(pair.getKey().getName() + " | " + pair.getValue()));
   }
 
   public Application() {
@@ -156,5 +178,17 @@ public class Application {
         .filter(politicalCommunity -> !politicalCommunitiesWithPostalCommunities
             .contains(politicalCommunity))
         .count();
+  }
+
+  public Set<PoliticalCommunity> getPoliticalCommunitiesWithoutPostalCommunities() {
+    Set<PoliticalCommunity> politicalCommunitiesWithPostalCommunities = model.getPostalCommunities()
+        .stream()
+        .map(PostalCommunity::getPoliticalCommunities)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+    return model.getPoliticalCommunities().stream()
+        .filter(politicalCommunity -> !politicalCommunitiesWithPostalCommunities
+            .contains(politicalCommunity))
+        .collect(Collectors.toSet());
   }
 }
